@@ -1,0 +1,77 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Todo App</title>
+    <link rel="stylesheet" href="{% static 'todo/style.css' %}">
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>My Todo List</h1>
+
+    <form method="POST" class="add-form">
+        {% csrf_token %}
+
+        <input
+            type="text"
+            name="title"
+            placeholder="Enter a task"
+        >
+
+        <button type="submit">Add</button>
+    </form>
+
+    {% for todo in todos %}
+
+        <div class="todo-item">
+
+            {% if todo.completed %}
+                <span class="completed-task">
+                    {{ todo.title }}
+                </span>
+            {% else %}
+                <span>
+                    {{ todo.title }}
+                </span>
+            {% endif %}
+
+            <div class="actions">
+
+                {% if not todo.completed %}
+                    <a class="complete" href="{% url 'complete' todo.id %}">
+                        Complete
+                    </a>
+                {% endif %}
+
+                <a href="{% url 'edit' todo.id %}">
+                    Edit
+                </a>
+
+                <a href="{% url 'delete' todo.id %}">
+                    Delete
+                </a>
+
+            </div>
+
+        </div>
+
+    {% empty %}
+
+        <p>No tasks yet!</p>
+
+    {% endfor %}
+
+    {% if todos %}
+        <a class="clear" href="{% url 'clear_all' %}">
+            Clear All
+        </a>
+    {% endif %}
+
+</div>
+
+</body>
+</html>
